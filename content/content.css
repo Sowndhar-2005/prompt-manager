@@ -1,0 +1,29 @@
+/* Suppress any injected Prompts toolbar button on all platforms per user request */
+#nlm-prompts-toolbar-btn,
+.nlm-prompts-toolbar-btn,
+#nlm-prompts-floating-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Base content styles if needed outside Shadow DOM */
+.nlm-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+
+@keyframes nlmFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

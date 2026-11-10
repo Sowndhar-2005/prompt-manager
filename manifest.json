@@ -1,0 +1,104 @@
+{
+  "manifest_version": 3,
+  "name": "NotebookLM Prompt Manager",
+  "version": "1.1.0",
+  "description": "Universal AI prompt manager with fast shortcut autocomplete for NotebookLM, Gemini, ChatGPT, Claude, DeepSeek, and Google Docs.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_title": "AI Prompts",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "commands",
+    "contextMenus",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://notebooklm.google.com/*",
+    "https://notebook.google.com/*",
+    "https://notebooklm.google/*",
+    "https://notebook.google/*",
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://chat.deepseek.com/*",
+    "https://copilot.microsoft.com/*"
+  ],
+  "commands": {
+    "open_manager": {
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "mac": "Alt+Shift+P"
+      },
+      "description": "Open Prompt Manager"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://notebooklm.google.com/*",
+        "https://notebook.google.com/*",
+        "https://notebooklm.google/*",
+        "https://notebook.google/*",
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://copilot.microsoft.com/*"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "js": [
+        "shared/constants.js",
+        "shared/utils.js",
+        "storage/storage.js",
+        "content/notebooklm-adapter.js",
+        "content/autocomplete.js",
+        "content/toolbar-button.js",
+        "content/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "manager/manager.html",
+        "manager/manager.css",
+        "manager/manager.js",
+        "assets/icons/*"
+      ],
+      "matches": [
+        "https://notebooklm.google.com/*",
+        "https://notebook.google.com/*",
+        "https://notebooklm.google/*",
+        "https://notebook.google/*",
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://copilot.microsoft.com/*"
+      ]
+    }
+  ]
+}

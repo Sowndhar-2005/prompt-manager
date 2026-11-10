@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal AI Prompt Manager</title>
+  <link rel="stylesheet" href="manager.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="app-brand">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Prompt Manager</span>
+            <span class="brand-target">NotebookLM & AI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-section-title">Navigation</div>
+        <button class="nav-item active" id="nav-all">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+          </span>
+          <span class="nav-label">All Prompts</span>
+          <span class="nav-count" id="count-all">0</span>
+        </button>
+        <button class="nav-item" id="nav-favorites">
+          <span class="nav-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </span>
+          <span class="nav-label">Favorites</span>
+          <span class="nav-count" id="count-fav">0</span>
+        </button>
+
+        <div class="nav-section-header">
+          <span class="nav-section-title">Folders</span>
+          <button class="btn-icon-subtle" id="btn-add-folder" title="New Folder">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+        </div>
+        <div class="folder-list" id="folder-list">
+          <!-- Folders injected via JS -->
+        </div>
+
+        <div class="nav-section-title">Tags</div>
+        <div class="tags-cloud" id="tags-cloud">
+          <!-- Tag pills injected via JS -->
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="footer-btn" id="btn-open-backup-modal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Backup & Sync (JSON)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-left">
+          <h1 class="view-title" id="view-title">All Prompts</h1>
+          <span class="filter-badge" id="active-filter-badge" style="display: none;"></span>
+        </div>
+        <div class="header-right">
+          <div class="search-box">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="search-input" placeholder="Search prompts by title, ;shortcut, content, or tag..." />
+            <button class="clear-search-btn" id="clear-search" style="display: none;">✕</button>
+          </div>
+          <button class="btn-primary" id="btn-new-prompt">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Prompt</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Prompts Grid / List -->
+      <section class="prompts-container" id="prompts-container">
+        <!-- Injected prompt cards -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Prompt Editor Modal -->
+  <div class="modal-backdrop" id="editor-modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="editor-modal-title">New Prompt</h2>
+        <button class="btn-close" id="btn-close-editor">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert-error" id="editor-validation-error" style="display: none;"></div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label class="form-label" for="prompt-title">Prompt Title <span class="required">*</span></label>
+            <input type="text" id="prompt-title" class="form-input" placeholder="e.g. Academic Textbook Creator" required />
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label" for="prompt-shortcut-slug">Trigger & Shortcut <span class="required">*</span></label>
+            <div class="shortcut-input-addon-group">
+              <select id="prompt-prefix-select" class="shortcut-prefix-select" title="Trigger Symbol">
+                <option value=";">;</option>
+                <option value="\">\</option>
+                <option value="~">~</option>
+                <option value="^">^</option>
+                <option value="!">!</option>
+                <option value="/">/</option>
+                <option value="@">@</option>
+                <option value="#">#</option>
+                <option value="$">$</option>
+                <option value="%">%</option>
+                <option value="&">&amp;</option>
+                <option value="?">?</option>
+                <option value=">">&gt;</option>
+                <option value="|">|</option>
+                <option value=".">.</option>
+              </select>
+              <input type="text" id="prompt-shortcut-slug" class="form-input monospace" placeholder="book" required />
+            </div>
+            <span class="field-hint">Select a trigger symbol, then enter shortcut name (e.g. book, sum, faq)</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label" for="prompt-folder">Folder</label>
+            <select id="prompt-folder" class="form-select">
+              <option value="">(None - Root)</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label" for="prompt-tags">Tags (comma-separated)</label>
+            <input type="text" id="prompt-tags" class="form-input" placeholder="academic, summary, research" />
+          </div>
+          <div class="form-group flex-0">
+            <label class="form-label">Favorite</label>
+            <button type="button" class="btn-fav-toggle" id="btn-editor-fav" aria-pressed="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Favorite</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prompt-content">Prompt Content <span class="required">*</span></label>
+          <textarea id="prompt-content" class="form-textarea" placeholder="Enter your full reusable prompt instructions..." rows="8" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel-editor">Cancel</button>
+        <button class="btn-primary" id="btn-save-prompt">Save Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Folder Modal -->
+  <div class="modal-backdrop" id="folder-modal-backdrop">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" id="folder-modal-title">New Folder</h2>
+        <button class="btn-close" id="btn-close-folder">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert-error" id="folder-validation-error" style="display: none;"></div>
+        <div class="form-group">
+          <label class="form-label" for="folder-name">Folder Name <span class="required">*</span></label>
+          <input type="text" id="folder-name" class="form-input" placeholder="e.g. Synthesis & Reports" required />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel-folder">Cancel</button>
+        <button class="btn-primary" id="btn-save-folder">Save Folder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" id="confirm-modal-backdrop">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirm-modal-title">Delete Confirmation</h2>
+        <button class="btn-close" id="btn-close-confirm">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message" class="confirm-text">Are you sure you want to delete this prompt?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel-confirm">Cancel</button>
+        <button class="btn-danger" id="btn-execute-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup & JSON Import/Export Modal -->
+  <div class="modal-backdrop" id="backup-modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Backup & Restore (JSON)</h2>
+        <button class="btn-close" id="btn-close-backup">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="backup-section">
+          <h3>Export Prompts Backup</h3>
+          <p class="section-desc">Download a versioned JSON backup containing all prompts, folders, tags, and favorites.</p>
+          <button class="btn-secondary" id="btn-export-json">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download Backup JSON</span>
+          </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="backup-section">
+          <h3>Import Prompts Backup</h3>
+          <p class="section-desc">Upload a valid backup JSON file. Choose whether to merge with your existing prompts or replace all data.</p>
+          
+          <div class="import-mode-selection">
+            <label class="radio-label">
+              <input type="radio" name="import-mode" value="merge" checked />
+              <span><strong>Merge:</strong> Add new prompts and update existing shortcuts (Recommended)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="import-mode" value="replace" />
+              <span><strong>Replace:</strong> Completely overwrite all prompts and folders with backup</span>
+            </label>
+          </div>
+
+          <div class="file-upload-area" id="drop-zone">
+            <input type="file" id="import-file-input" accept=".json,application/json" style="display:none;" />
+            <button class="btn-secondary" id="btn-select-file">Select JSON File</button>
+            <span class="file-chosen-text" id="selected-file-name">No file selected</span>
+          </div>
+
+          <div class="alert-error" id="import-error-banner" style="display: none; margin-top: 10px;"></div>
+          <div class="alert-success" id="import-success-banner" style="display: none; margin-top: 10px;"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel-backup">Close</button>
+        <button class="btn-primary" id="btn-execute-import" disabled>Start Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-shelf" id="toast-shelf"></div>
+
+  <!-- Scripts -->
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="../storage/storage.js"></script>
+  <script src="manager.js"></script>
+</body>
+</html>
